@@ -1,4 +1,4 @@
-package env_vars
+package app
 
 import "os"
 
@@ -20,7 +20,7 @@ var envVarKeys = struct {
 }{
 	externalApiUrl:       "EXTERNAL_API_URL",
 	externalApiAuthToken: "EXTERNAL_API_AUTH_TOKEN",
-	dbUrl:                "DATABASE_URL",
+	dbUrl:                "DB_URL",
 }
 
 // Initialize environment variables and validate them
