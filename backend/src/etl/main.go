@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"vue_go_cockroachdb/app"
+	"vue_go_cockroachdb/src/app"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/jackc/pgx/v5"

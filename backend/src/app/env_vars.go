@@ -6,6 +6,7 @@ type EnvVars struct {
 	ApiURL    string
 	AuthToken string
 	DBURL     string
+	Port      string
 }
 
 // Global variable to hold the initialized environment variables
@@ -17,10 +18,12 @@ var envVarKeys = struct {
 	externalApiUrl       string
 	externalApiAuthToken string
 	dbUrl                string
+	port                 string
 }{
 	externalApiUrl:       "EXTERNAL_API_URL",
 	externalApiAuthToken: "EXTERNAL_API_AUTH_TOKEN",
 	dbUrl:                "DB_URL",
+	port:                 "PORT",
 }
 
 // Initialize environment variables and validate them
@@ -29,6 +32,7 @@ func initEnvVars() EnvVars {
 		envVarKeys.externalApiUrl:       os.Getenv(envVarKeys.externalApiUrl),
 		envVarKeys.externalApiAuthToken: os.Getenv(envVarKeys.externalApiAuthToken),
 		envVarKeys.dbUrl:                os.Getenv(envVarKeys.dbUrl),
+		envVarKeys.port:                 os.Getenv(envVarKeys.port),
 	}
 
 	// iterate over the environment variables
@@ -41,5 +45,6 @@ func initEnvVars() EnvVars {
 		ApiURL:    envVars[envVarKeys.externalApiUrl],
 		AuthToken: envVars[envVarKeys.externalApiAuthToken],
 		DBURL:     envVars[envVarKeys.dbUrl],
+		Port:      envVars[envVarKeys.port],
 	}
 }
