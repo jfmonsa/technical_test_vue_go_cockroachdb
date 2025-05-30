@@ -3,8 +3,16 @@
 version: '3'
 
 tasks:
-  etl_script:
+  # backend tasks
+  back_run_etl_script:
+    aliases: ['betl']
     desc: Run the ETL script
     dotenv: ['.env']
     cmds:
-      - go run ./etl ./app/env_vars.go
+      - go run ./src/etl ./src/app/env_vars.go
+  back_start:
+    aliases: ['bstart']
+    desc: Start the backend server
+    dotenv: ['.env']
+    cmds:
+      - go run ./src/main.go
