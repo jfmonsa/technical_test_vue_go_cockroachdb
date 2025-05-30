@@ -9,4 +9,5 @@ import (
 type StockRepository interface {
 	GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, error)
 	GetStockByTicker(ctx context.Context, ticker string) (*models.Stock, error)
+	GetTopRecommendedStocks(ctx context.Context, limit int) ([]models.Stock, error)
 }

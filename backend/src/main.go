@@ -32,6 +32,10 @@ func main() {
 	// curl "http://localhost:8080/stocks/AKBA"
 	r.Get("/stocks/{ticker}", handler.GetStockByTicker)
 
+	// to test:
+	// curl "http://localhost:8080/recommendations"
+	r.Get("/recommendations", handler.GetRecommendations)
+
 	log.Println("🚀 Server listening ")
 	http.ListenAndServe(":"+app.EnvVarsValues.Port, r)
 }

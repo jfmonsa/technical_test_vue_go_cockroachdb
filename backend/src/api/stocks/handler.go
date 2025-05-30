@@ -53,3 +53,15 @@ func (h *Handler) GetStockByTicker(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(stock)
 }
+
+func (h *Handler) GetRecommendations(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	stocks, err := h.Repo.GetTopRecommendedStocks(ctx, 5)
+	if err != nil {
+		http.Error(w, "Failed to get recommendations", http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(stocks)
+}
