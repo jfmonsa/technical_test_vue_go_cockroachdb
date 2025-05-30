@@ -1,0 +1,12 @@
+package stocks
+
+import (
+	"context"
+	"vue_go_cockroachdb/src/models"
+)
+
+// interface
+type StockRepository interface {
+	GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, error)
+	GetStockByTicker(ctx context.Context, ticker string) (*models.Stock, error)
+}
