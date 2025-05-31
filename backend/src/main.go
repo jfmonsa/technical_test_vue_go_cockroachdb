@@ -24,6 +24,20 @@ func main() {
 
 	r := chi.NewRouter()
 
+	// CORS middleware to allow cross-origin requests
+	r.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			if r.Method == "OPTIONS" {
+				w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+				w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	})
+
 	// to test:
 	// curl "http://localhost:8080/stocks?page=1&limit=5"
 	r.Get("/stocks", handler.GetStocks)
