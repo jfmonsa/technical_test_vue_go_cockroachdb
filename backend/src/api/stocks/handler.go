@@ -31,14 +31,27 @@ func (h *Handler) GetStocks(w http.ResponseWriter, r *http.Request) {
 		limit = 10
 	}
 
-	stocks, err := h.Repo.GetStocks(r.Context(), search, sortBy, order, page, limit)
+	stocks, total, err := h.Repo.GetStocks(r.Context(), search, sortBy, order, page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	totalPages := 0
+	if limit > 0 {
+		totalPages = (total + limit - 1) / limit
+	}
+
+	resp := map[string]interface{}{
+		"items":      stocks,
+		"total":      total,
+		"page":       page,
+		"limit":      limit,
+		"totalPages": totalPages,
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(stocks)
+	json.NewEncoder(w).Encode(resp)
 }
 
 func (h *Handler) GetStockByTicker(w http.ResponseWriter, r *http.Request) {

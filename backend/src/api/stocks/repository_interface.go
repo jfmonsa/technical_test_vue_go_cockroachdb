@@ -7,7 +7,7 @@ import (
 
 // interface
 type StockRepository interface {
-	GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, error)
+	GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, int, error)
 	GetStockByTicker(ctx context.Context, ticker string) (*models.Stock, error)
 	GetTopRecommendedStocks(ctx context.Context, limit int) ([]models.Stock, error)
 }

@@ -17,10 +17,11 @@ func NewCockroachDBStockRepository(db *sql.DB) *CockroachDBStockRepository {
 	return &CockroachDBStockRepository{DB: db}
 }
 
-func (r *CockroachDBStockRepository) GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, error) {
+func (r *CockroachDBStockRepository) GetStocks(ctx context.Context, search, sortBy, order string, page, limit int) ([]models.Stock, int, error) {
 	offset := (page - 1) * limit
 	baseQuery := `
-        SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time
+        SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time,
+               COUNT(*) OVER() as total_count
         FROM stocks
     `
 
@@ -49,12 +50,14 @@ func (r *CockroachDBStockRepository) GetStocks(ctx context.Context, search, sort
 
 	rows, err := r.DB.QueryContext(ctx, baseQuery, args...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 	var stocks []models.Stock
+	total := 0
 	for rows.Next() {
 		var s models.Stock
+		var rowTotal int
 		err := rows.Scan(
 			&s.Ticker,
 			&s.Company,
@@ -65,13 +68,15 @@ func (r *CockroachDBStockRepository) GetStocks(ctx context.Context, search, sort
 			&s.TargetFrom,
 			&s.TargetTo,
 			&s.Time,
+			&rowTotal,
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		stocks = append(stocks, s)
+		total = rowTotal
 	}
-	return stocks, nil
+	return stocks, total, nil
 }
 
 func (r *CockroachDBStockRepository) GetStockByTicker(ctx context.Context, ticker string) (*models.Stock, error) {
