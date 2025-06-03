@@ -26,7 +26,7 @@ func (r *CockroachDBStockRepository) GetStocks(ctx context.Context, search, sort
     `
 
 	var filters []string
-	var args []interface{}
+	var args []any
 	argIndex := 1
 
 	if search != "" {
@@ -103,20 +103,25 @@ func (r *CockroachDBStockRepository) GetStockByTicker(ctx context.Context, ticke
 	return &s, nil
 }
 
-func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context, limit int) ([]models.Stock, error) {
+type StockWithScore struct {
+	models.Stock
+	Score float64
+}
+
+func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context, limit int, minimunScore float64) ([]StockWithScore, error) {
 	query := `
         SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time
         FROM stocks
         ORDER BY time DESC
-        LIMIT 100
-    `
+        `
+
 	rows, err := r.DB.QueryContext(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var recommendations []models.Stock
+	var recommendations []StockWithScore
 
 	for rows.Next() {
 		var s models.Stock
@@ -124,39 +129,17 @@ func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context
 			continue
 		}
 
-		// Simple scoring system
-		score := 0.0
+		score := CalculateStockScore(s)
 
-		// 1. Potencial de ganancia
-		if s.TargetFrom > 0 {
-			potential := ((s.TargetTo - s.TargetFrom) / s.TargetFrom) * 100
-			if potential > 0 {
-				score += potential / 5 // Normalizar
-			}
-		}
-
-		// 2. Acción recomendada
-		action := strings.ToLower(s.Action)
-		if strings.Contains(action, "buy") || strings.Contains(action, "outperform") {
-			score += 2
-		}
-
-		// 3. Mejora de calificación
-		if s.RatingFrom != "" && s.RatingTo != "" && s.RatingFrom != s.RatingTo {
-			score += 1
-		}
-
-		// 4. Reciente (deberías parsear fecha real)
-		// Aquí deberías convertir s.Time a time.Time y comparar si es reciente
-		// Solo para ejemplo:
-		score += 1
-
-		// Guardamos el score temporalmente como parte del ticker para debug
-		s.Company = fmt.Sprintf("%s (score: %.2f)", s.Company, score)
+		// Format score for display in the company name
+		// s.Company = fmt.Sprintf("%s (score: %.2f)", s.Company, score)
 
 		// Umbral mínimo (opcional)
-		if score >= 3.0 {
-			recommendations = append(recommendations, s)
+		if score >= minimunScore {
+			recommendations = append(recommendations, StockWithScore{
+				Stock: s,
+				Score: score,
+			})
 		}
 	}
 

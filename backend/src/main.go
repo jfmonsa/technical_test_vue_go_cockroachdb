@@ -47,7 +47,7 @@ func main() {
 	r.Get("/stocks/{ticker}", handler.GetStockByTicker)
 
 	// to test:
-	// curl "http://localhost:8080/recommendations"
+	// curl "http://localhost:8080/recommendations?limit=5&minimun_score=7
 	r.Get("/recommendations", handler.GetRecommendations)
 
 	log.Println("🚀 Server listening ")

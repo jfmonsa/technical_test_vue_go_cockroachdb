@@ -70,11 +70,26 @@ func (h *Handler) GetStockByTicker(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	stocks, err := h.Repo.GetTopRecommendedStocks(ctx, 5)
+	limit := 5
+	if l := r.URL.Query().Get("limit"); l != "" {
+		if parsed, err := strconv.Atoi(l); err == nil && parsed > 0 {
+			limit = parsed
+		}
+	}
+
+	minimunScore := 0.0
+	if s := r.URL.Query().Get("minimun_score"); s != "" {
+		if parsed, err := strconv.ParseFloat(s, 64); err == nil && parsed >= 0 {
+			minimunScore = parsed
+		}
+	}
+
+	stocks, err := h.Repo.GetTopRecommendedStocks(ctx, limit, minimunScore)
 	if err != nil {
 		http.Error(w, "Failed to get recommendations", http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(stocks)
 }
