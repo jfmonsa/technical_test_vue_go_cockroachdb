@@ -13,3 +13,12 @@ CREATE TABLE IF NOT EXISTS stocks (
     time TIMESTAMP,
     PRIMARY KEY (ticker, time)
 );
+
+-- This table stores the raw JSON data for items that failed in TRANSFORM or LOAD phases of ETL process.
+CREATE TABLE failed_items (
+    id SERIAL PRIMARY KEY,
+    raw_json JSONB NOT NULL,
+    error_message TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    failed_at_phase TEXT NOT NULL,
+);
