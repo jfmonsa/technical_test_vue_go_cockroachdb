@@ -1,6 +1,5 @@
 # Logs
 logs
-*.log
 pnpm-debug.log*
 
 node_modules

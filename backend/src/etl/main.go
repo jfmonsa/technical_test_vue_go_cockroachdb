@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 	"vue_go_cockroachdb/src/app"
@@ -22,10 +23,26 @@ const (
 	phailedPhaseLoad      = "LOAD" // insert in ETL terminology
 )
 
+// writeLogs initializes the logging system to write logs to a file named "etl.log".
+// If the file does not exist, it will be created. If it exists, logs will be appended.
+// It returns the file handle for the log file.
+func writeLogs() *os.File {
+	logFile, err := os.OpenFile("etl.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal("No se pudo abrir el archivo de log:", err)
+	}
+
+	log.SetOutput(logFile)
+	return logFile
+}
+
 // main is the entry point for the ETL process.
 // It connects to the database, fetches paginated stock data from an API,
 // transforms each item, and inserts it into the database.
 func main() {
+	logFile := writeLogs()
+	defer logFile.Close()
+
 	ctx := context.Background()
 
 	// Conectar a CockroachDB
@@ -80,6 +97,20 @@ func main() {
 // transform converts a raw API item into a StockItem struct,
 // parsing dollar values and timestamps as needed.
 func transform(raw APIRawItem) (models.Stock, error) {
+	if raw.Ticker == "" {
+		return models.Stock{}, fmt.Errorf("ticker is required but was empty")
+	}
+	if raw.Time == "" {
+		return models.Stock{}, fmt.Errorf("time is required but was empty for ticker '%s'", raw.Ticker)
+	}
+	// If rating_from or rating_to are empty, set them to "Neutral"
+	if strings.TrimSpace(raw.RatingFrom) == "" {
+		raw.RatingFrom = "Neutral"
+	}
+	if strings.TrimSpace(raw.RatingTo) == "" {
+		raw.RatingTo = "Neutral"
+	}
+
 	if !isValidRating(raw.RatingFrom) {
 		return models.Stock{}, fmt.Errorf("invalid rating_from value '%s' for ticker '%s'", raw.RatingFrom, raw.Ticker)
 	}
