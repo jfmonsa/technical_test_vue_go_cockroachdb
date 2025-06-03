@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 	"vue_go_cockroachdb/src/app"
 	"vue_go_cockroachdb/src/models"
 
@@ -27,7 +28,14 @@ const (
 // If the file does not exist, it will be created. If it exists, logs will be appended.
 // It returns the file handle for the log file.
 func writeLogs() *os.File {
-	logFile, err := os.OpenFile("etl.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	dateStr := time.Now().Format("2006-01-02")
+	logDir := "logs"
+	// Ensure the logs directory exists
+	if err := os.MkdirAll(logDir, 0755); err != nil {
+		log.Fatal("No se pudo crear el directorio de logs:", err)
+	}
+	logFileName := fmt.Sprintf("%s/etl-%s.log", logDir, dateStr)
+	logFile, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal("No se pudo abrir el archivo de log:", err)
 	}
@@ -105,9 +113,13 @@ func transform(raw APIRawItem) (models.Stock, error) {
 	}
 	// If rating_from or rating_to are empty, set them to "Neutral"
 	if strings.TrimSpace(raw.RatingFrom) == "" {
+		rawJSON, _ := json.Marshal(raw)
+		log.Printf("RatingFrom vacío para ticker '%s'. Raw JSON: %s", raw.Ticker, string(rawJSON))
 		raw.RatingFrom = "Neutral"
 	}
 	if strings.TrimSpace(raw.RatingTo) == "" {
+		rawJSON, _ := json.Marshal(raw)
+		log.Printf("RatingTo vacío para ticker '%s'. Raw JSON: %s", raw.Ticker, string(rawJSON))
 		raw.RatingTo = "Neutral"
 	}
 
