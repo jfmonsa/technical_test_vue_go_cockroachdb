@@ -16,15 +16,23 @@ export const useStockStore = defineStore("stock", () => {
   const stocks = ref<Stock[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
+  // For Pagination
   const currentPage = ref(1);
   const limit = ref(10);
   const total = ref(0);
   const totalPages = ref(0);
-  const searchQuery = ref("");
+  // For Search and Sorting
   const sortField = ref<keyof Stock>("time");
   const sortDirection = ref<"asc" | "desc">("desc");
-
+  const searchQuery = ref("");
+  
   // Getters
+  /**
+   * Computed property that filters the list of stocks based on the current search query.
+   *
+   * If the search query is empty, all stocks are returned. Otherwise, it returns only the stocks
+   * whose `ticker`, `company`, `brokerage`, or `action` fields include the search query (case-insensitive).
+   */
   const filteredStocks = computed(() => {
     if (!searchQuery.value) return stocks.value;
 
@@ -38,6 +46,15 @@ export const useStockStore = defineStore("stock", () => {
     );
   });
 
+  /**
+   * A computed property that returns a sorted array of stocks based on the selected sort field and direction.
+   *
+   * - If the sort field is "time", stocks are sorted by their date values in ascending or descending order.
+   * - For other fields, stocks are sorted lexicographically using `localeCompare`.
+   *
+   * @remarks
+   * The sorting is performed on a shallow copy of the filtered stocks to avoid mutating the original array.
+   */
   const sortedStocks = computed(() => {
     const sorted = [...filteredStocks.value];
 
@@ -51,7 +68,14 @@ export const useStockStore = defineStore("stock", () => {
         return sortDirection.value === "asc" ? aTime - bTime : bTime - aTime;
       }
 
-      const comparison = aValue.localeCompare(bValue);
+      let comparison: number;
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        comparison = aValue.localeCompare(bValue);
+      } else if (typeof aValue === "number" && typeof bValue === "number") {
+        comparison = aValue - bValue;
+      } else {
+        comparison = 0;
+      }
       return sortDirection.value === "asc" ? comparison : -comparison;
     });
 

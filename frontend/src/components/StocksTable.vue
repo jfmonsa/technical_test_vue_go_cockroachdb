@@ -119,8 +119,8 @@
             </td>
             <td class="table-cell">
                 <TargetChange
-                :from="stock.target_from"
-                :to="stock.target_to"
+                :from="String(stock.target_from)"
+                :to="String(stock.target_to)"
                 />
             </td>
             <td class="table-cell">
@@ -141,6 +141,7 @@ import RatingChange from "./RatingChange.vue";
 import TargetChange from "./TargetChange.vue";
 import { formatDate } from "../utils/dates";
 import type { Stock } from "@/models/stock";
+
 defineProps<{
   stocks: Stock[];
   loading: boolean;

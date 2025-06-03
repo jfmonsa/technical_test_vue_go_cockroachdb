@@ -1,3 +1,7 @@
+/**
+ * Represents a stock recommendation or analysis entry.
+ *
+ */
 export interface Stock {
   ticker: string;
   company: string;
@@ -5,7 +9,7 @@ export interface Stock {
   action: string;
   rating_from: string;
   rating_to: string;
-  target_from: string;
-  target_to: string;
+  target_from: number;
+  target_to: number;
   time: string;
 }
