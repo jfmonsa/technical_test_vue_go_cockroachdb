@@ -28,13 +28,13 @@ const (
 // If the file does not exist, it will be created. If it exists, logs will be appended.
 // It returns the file handle for the log file.
 func writeLogs() *os.File {
-	dateStr := time.Now().Format("2006-01-02")
+	dateTimeStr := time.Now().Format(time.RFC3339)
 	logDir := "logs"
 	// Ensure the logs directory exists
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		log.Fatal("No se pudo crear el directorio de logs:", err)
 	}
-	logFileName := fmt.Sprintf("%s/etl-%s.log", logDir, dateStr)
+	logFileName := fmt.Sprintf("%s/etl-%s.log", logDir, dateTimeStr)
 	logFile, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal("No se pudo abrir el archivo de log:", err)
