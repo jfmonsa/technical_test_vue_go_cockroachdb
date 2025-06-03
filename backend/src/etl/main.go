@@ -81,19 +81,19 @@ func main() {
 // parsing dollar values and timestamps as needed.
 func transform(raw APIRawItem) (models.Stock, error) {
 	if !isValidRating(raw.RatingFrom) {
-		return models.Stock{}, fmt.Errorf("invalid rating_from value '%s'", raw.RatingFrom)
+		return models.Stock{}, fmt.Errorf("invalid rating_from value '%s' for ticker '%s'", raw.RatingFrom, raw.Ticker)
 	}
 	if !isValidRating(raw.RatingTo) {
-		return models.Stock{}, fmt.Errorf("invalid rating_to value '%s'", raw.RatingTo)
+		return models.Stock{}, fmt.Errorf("invalid rating_to value '%s' for ticker '%s'", raw.RatingTo, raw.Ticker)
 	}
 
 	targetFrom, err := parseDollar(raw.TargetFrom)
 	if err != nil {
-		return models.Stock{}, fmt.Errorf("invalid target_from value '%s': %v", raw.TargetFrom, err)
+		return models.Stock{}, fmt.Errorf("invalid target_from value '%s' for ticker '%s': %v", raw.TargetFrom, raw.Ticker, err)
 	}
 	targetTo, err := parseDollar(raw.TargetTo)
 	if err != nil {
-		return models.Stock{}, fmt.Errorf("invalid target_to value '%s': %v", raw.TargetTo, err)
+		return models.Stock{}, fmt.Errorf("invalid target_to value '%s' for ticker '%s': %v", raw.TargetTo, raw.Ticker, err)
 	}
 
 	return models.Stock{
@@ -112,6 +112,7 @@ func transform(raw APIRawItem) (models.Stock, error) {
 // parseDollar removes the dollar sign from a string and parses it as a float64.
 func parseDollar(s string) (float64, error) {
 	s = strings.ReplaceAll(s, "$", "")
+	s = strings.ReplaceAll(s, ",", "") // Delete commas for thousands separators
 	return strconv.ParseFloat(s, 64)
 }
 
