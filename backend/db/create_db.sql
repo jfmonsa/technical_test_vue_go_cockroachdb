@@ -20,5 +20,5 @@ CREATE TABLE failed_items (
     raw_json JSONB NOT NULL,
     error_message TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now(),
-    failed_at_phase TEXT NOT NULL,
+    failed_at_phase TEXT NOT NULL
 );
