@@ -52,6 +52,8 @@ import PaginationControls from "@/components/PaginationControls.vue";
 import HeaderSection from "../components/HeaderSection.vue";
 import StatCardSection from "../components/StatCardSection.vue";
 import StocksTable from "../components/StocksTable.vue";
+import { storeToRefs } from "pinia";
+
 
 
 const stockStore = useStockStore();
@@ -68,15 +70,18 @@ const {
   sortField,
   sortDirection,
   sortedStocks,
+  
+} = storeToRefs(stockStore);
+
+const {
   fetchStocks,
   setPage,
   setSearch,
   setSorting,
 } = stockStore;
-
 // Methods
 const refreshData = () => {
-  fetchStocks(currentPage);
+  fetchStocks(currentPage.value);
 };
 
 
@@ -84,4 +89,5 @@ const refreshData = () => {
 onMounted(() => {
   fetchStocks();
 });
+
 </script>
