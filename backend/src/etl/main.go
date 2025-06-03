@@ -32,12 +32,12 @@ func writeLogs() *os.File {
 	logDir := "logs"
 	// Ensure the logs directory exists
 	if err := os.MkdirAll(logDir, 0755); err != nil {
-		log.Fatal("No se pudo crear el directorio de logs:", err)
+		log.Fatal("Could not create logs directory:", err)
 	}
 	logFileName := fmt.Sprintf("%s/etl-%s.log", logDir, dateTimeStr)
 	logFile, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatal("No se pudo abrir el archivo de log:", err)
+		log.Fatal("Could not open log file:", err)
 	}
 
 	log.SetOutput(logFile)
@@ -111,18 +111,9 @@ func transform(raw APIRawItem) (models.Stock, error) {
 	if raw.Time == "" {
 		return models.Stock{}, fmt.Errorf("time is required but was empty for ticker '%s'", raw.Ticker)
 	}
-	// If rating_from or rating_to are empty, set them to "Neutral"
-	if strings.TrimSpace(raw.RatingFrom) == "" {
-		rawJSON, _ := json.Marshal(raw)
-		log.Printf("RatingFrom vacío para ticker '%s'. Raw JSON: %s", raw.Ticker, string(rawJSON))
-		raw.RatingFrom = "Neutral"
-	}
-	if strings.TrimSpace(raw.RatingTo) == "" {
-		rawJSON, _ := json.Marshal(raw)
-		log.Printf("RatingTo vacío para ticker '%s'. Raw JSON: %s", raw.Ticker, string(rawJSON))
-		raw.RatingTo = "Neutral"
-	}
 
+	// NOTE: there are registers that have an empty rating_from or rating_to the desicion is to ignore them
+	// because they are could be considered as "not rated" or "no recommendation" and bias the results.
 	if !isValidRating(raw.RatingFrom) {
 		return models.Stock{}, fmt.Errorf("invalid rating_from value '%s' for ticker '%s'", raw.RatingFrom, raw.Ticker)
 	}
