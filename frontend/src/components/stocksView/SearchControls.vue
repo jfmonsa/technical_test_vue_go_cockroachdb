@@ -21,8 +21,8 @@ import { ref, watch } from 'vue';
 
 const props = defineProps(['searchQuery', 'loading']);
 const emit = defineEmits(['update:searchQuery', 'refresh']);
-import SearchIcon from './Icons/SearchIcon.vue';
-import RefreshButton from './RefreshDataBtn.vue';
+import SearchIcon from '../Icons/SearchIcon.vue';
+import RefreshButton from '../RefreshDataBtn.vue';
 
 const localSearchQuery = ref(props.searchQuery);
 

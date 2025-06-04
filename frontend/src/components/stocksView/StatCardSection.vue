@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import StatCard from './StatCard.vue';
-import StatsIcon from './Icons/StatsIcon.vue';
-import SearchGreenIcon from './Icons/SearchGreenIcon.vue';
-import PageIcon from './Icons/PageIcon.vue';
+import StatCard from '../StatCard.vue';
+import StatsIcon from '../Icons/StatsIcon.vue';
+import SearchGreenIcon from '../Icons/SearchGreenIcon.vue';
+import PageIcon from '../Icons/PageIcon.vue';
 
 defineProps<{
   total: number;

@@ -132,11 +132,11 @@
 </template>
 
 <script setup lang="ts">
-import SortIcon from './SortIcon.vue';
-import ActionBadge from './common/ActionBadge.vue';
-import RatingChange from './RatingChange.vue';
-import TargetChange from './common/TargetChange.vue';
-import { formatDate } from '../utils/dates';
+import SortIcon from '../SortIcon.vue';
+import ActionBadge from '../common/ActionBadge.vue';
+import RatingChange from '../common/RatingChange.vue';
+import TargetChange from '../common/TargetChange.vue';
+import { formatDate } from '../../utils/dates';
 import type { Stock } from '@/models/stock';
 
 defineProps<{

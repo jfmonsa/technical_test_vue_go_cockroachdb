@@ -46,12 +46,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStockStore } from '../stores/stockStore';
-import ErrorAlert from '../components/ErrorAlert.vue';
-import SearchControls from '../components/SearchControls.vue';
-import PaginationControls from '@/components/PaginationControls.vue';
-import HeaderSection from '../components/HeaderSection.vue';
-import StatCardSection from '../components/StatCardSection.vue';
-import StocksTable from '../components/StocksTable.vue';
+import ErrorAlert from '../components/common/ErrorAlert.vue';
+import SearchControls from '../components/stocksView/SearchControls.vue';
+import PaginationControls from '@/components/stocksView/PaginationControls.vue';
+import HeaderSection from '../components/stocksView/HeaderSection.vue';
+import StatCardSection from '../components/stocksView/StatCardSection.vue';
+import StocksTable from '../components/stocksView/StocksTable.vue';
 import { storeToRefs } from 'pinia';
 
 const stockStore = useStockStore();
