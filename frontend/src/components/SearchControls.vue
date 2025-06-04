@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
-      <div class="relative flex-1 max-w-md">
+  <div class="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+      <div class="relative max-w-md flex-1">
         <SearchIcon />
         <input
           v-model="localSearchQuery"
           @input="handleSearch"
           type="text"
           placeholder="Search by ticker, company, brokerage..."
-          class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="block w-full rounded-lg border border-gray-300 py-2 pr-3 pl-10 focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
         />
       </div>
       <RefreshButton :loading="loading" :on-click="refreshData" />
@@ -21,14 +21,17 @@ import { ref, watch } from 'vue';
 
 const props = defineProps(['searchQuery', 'loading']);
 const emit = defineEmits(['update:searchQuery', 'refresh']);
-import SearchIcon from "./Icons/SearchIcon.vue";
-import RefreshButton from "./RefreshDataBtn.vue";
+import SearchIcon from './Icons/SearchIcon.vue';
+import RefreshButton from './RefreshDataBtn.vue';
 
 const localSearchQuery = ref(props.searchQuery);
 
-watch(() => props.searchQuery, (newVal) => {
-  localSearchQuery.value = newVal;
-});
+watch(
+  () => props.searchQuery,
+  (newVal) => {
+    localSearchQuery.value = newVal;
+  },
+);
 
 const handleSearch = (event: Event) => {
   const target = event.target as HTMLInputElement;

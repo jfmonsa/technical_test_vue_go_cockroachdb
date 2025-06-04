@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
+  <div class="border-t border-gray-200 bg-gray-50 px-6 py-3">
     <div class="flex items-center justify-between">
       <div class="text-sm text-gray-700">
         Showing {{ start }} - {{ end }} of {{ total }} results
@@ -8,7 +8,7 @@
         <button
           @click="$emit('page', currentPage - 1)"
           :disabled="currentPage <= 1"
-          class="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          class="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
         >
           Previous
         </button>
@@ -19,10 +19,10 @@
             :key="page"
             @click="$emit('page', page)"
             :class="[
-              'px-3 py-1 rounded text-sm font-medium transition-colors',
+              'rounded px-3 py-1 text-sm font-medium transition-colors',
               page === currentPage
                 ? 'bg-blue-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300',
+                : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
             ]"
           >
             {{ page }}
@@ -32,7 +32,7 @@
         <button
           @click="$emit('page', currentPage + 1)"
           :disabled="currentPage >= totalPages"
-          class="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          class="btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
         >
           Next
         </button>
@@ -52,7 +52,9 @@ const props = defineProps<{
 }>();
 
 const start = computed(() => (props.currentPage - 1) * props.limit + 1);
-const end = computed(() => Math.min(props.currentPage * props.limit, props.total));
+const end = computed(() =>
+  Math.min(props.currentPage * props.limit, props.total),
+);
 
 const visiblePages = computed(() => {
   const pages = [];

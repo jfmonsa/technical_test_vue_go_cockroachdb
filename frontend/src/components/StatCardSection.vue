@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+  <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
     <StatCard label="Total Stocks" :value="total">
       <template #icon><StatsIcon /></template>
     </StatCard>
@@ -13,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import StatCard from "./StatCard.vue";
-import StatsIcon from "./Icons/StatsIcon.vue";
-import SearchGreenIcon from "./Icons/SearchGreenIcon.vue";
-import PageIcon from "./Icons/PageIcon.vue";
+import StatCard from './StatCard.vue';
+import StatsIcon from './Icons/StatsIcon.vue';
+import SearchGreenIcon from './Icons/SearchGreenIcon.vue';
+import PageIcon from './Icons/PageIcon.vue';
 
 defineProps<{
   total: number;

@@ -1,7 +1,6 @@
-import type { Stock } from "@/models/stock";
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-
+import type { Stock } from '@/models/stock';
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 
 export interface StockResponse {
   items: Stock[];
@@ -11,7 +10,7 @@ export interface StockResponse {
   totalPages: number;
 }
 
-export const useStockStore = defineStore("stock", () => {
+export const useStockStore = defineStore('stock', () => {
   // State
   const stocks = ref<Stock[]>([]);
   const loading = ref(false);
@@ -22,10 +21,10 @@ export const useStockStore = defineStore("stock", () => {
   const total = ref(0);
   const totalPages = ref(0);
   // For Search and Sorting
-  const sortField = ref<keyof Stock>("time");
-  const sortDirection = ref<"asc" | "desc">("desc");
-  const searchQuery = ref("");
-  
+  const sortField = ref<keyof Stock>('time');
+  const sortDirection = ref<'asc' | 'desc'>('desc');
+  const searchQuery = ref('');
+
   // Getters
   /**
    * Computed property that filters the list of stocks based on the current search query.
@@ -42,7 +41,7 @@ export const useStockStore = defineStore("stock", () => {
         stock.ticker.toLowerCase().includes(query) ||
         stock.company.toLowerCase().includes(query) ||
         stock.brokerage.toLowerCase().includes(query) ||
-        stock.action.toLowerCase().includes(query)
+        stock.action.toLowerCase().includes(query),
     );
   });
 
@@ -62,21 +61,21 @@ export const useStockStore = defineStore("stock", () => {
       const aValue = a[sortField.value];
       const bValue = b[sortField.value];
 
-      if (sortField.value === "time") {
+      if (sortField.value === 'time') {
         const aTime = new Date(aValue).getTime();
         const bTime = new Date(bValue).getTime();
-        return sortDirection.value === "asc" ? aTime - bTime : bTime - aTime;
+        return sortDirection.value === 'asc' ? aTime - bTime : bTime - aTime;
       }
 
       let comparison: number;
-      if (typeof aValue === "string" && typeof bValue === "string") {
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
         comparison = aValue.localeCompare(bValue);
-      } else if (typeof aValue === "number" && typeof bValue === "number") {
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
         comparison = aValue - bValue;
       } else {
         comparison = 0;
       }
-      return sortDirection.value === "asc" ? comparison : -comparison;
+      return sortDirection.value === 'asc' ? comparison : -comparison;
     });
 
     return sorted;
@@ -89,7 +88,7 @@ export const useStockStore = defineStore("stock", () => {
 
     try {
       const response = await fetch(
-          `${import.meta.env.VITE_API_BASE_URL}/stocks?page=${page}&limit=${limit.value}`
+        `${import.meta.env.VITE_API_BASE_URL}/stocks?page=${page}&limit=${limit.value}`,
       );
 
       if (!response.ok) {
@@ -104,8 +103,8 @@ export const useStockStore = defineStore("stock", () => {
       totalPages.value = data.totalPages;
     } catch (err) {
       error.value =
-        err instanceof Error ? err.message : "Error fetching stocks";
-      console.error("Error fetching stocks:", err);
+        err instanceof Error ? err.message : 'Error fetching stocks';
+      console.error('Error fetching stocks:', err);
     } finally {
       loading.value = false;
     }
@@ -122,10 +121,10 @@ export const useStockStore = defineStore("stock", () => {
 
   const setSorting = (field: keyof Stock) => {
     if (sortField.value === field) {
-      sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+      sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
     } else {
       sortField.value = field;
-      sortDirection.value = "asc";
+      sortDirection.value = 'asc';
     }
   };
 

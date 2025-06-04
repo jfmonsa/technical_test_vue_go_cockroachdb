@@ -1,44 +1,44 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Radius variables */
   --radius: 0.5rem;
-  
+
   /* Color variables using CSS custom properties */
   --color-border: hsl(210 40% 80%);
   --color-input: hsl(210 40% 80%);
   --color-ring: hsl(210 40% 80%);
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(222.2 84% 4.9%);
-  
+
   /* Primary colors */
   --color-primary: hsl(222.2 47.4% 11.2%);
   --color-primary-foreground: hsl(210 40% 98%);
-  
+
   /* Secondary colors */
   --color-secondary: hsl(210 40% 96%);
   --color-secondary-foreground: hsl(222.2 84% 4.9%);
-  
+
   /* Destructive colors */
   --color-destructive: hsl(0 72.2% 50.6%);
   --color-destructive-foreground: hsl(210 40% 98%);
-  
+
   /* Muted colors */
   --color-muted: hsl(210 40% 96%);
   --color-muted-foreground: hsl(215.4 16.3% 46.9%);
-  
+
   /* Accent colors */
   --color-accent: hsl(210 40% 96%);
   --color-accent-foreground: hsl(222.2 84% 4.9%);
-  
+
   /* Popover colors */
   --color-popover: hsl(0 0% 100%);
   --color-popover-foreground: hsl(222.2 84% 4.9%);
-  
+
   /* Card colors */
   --color-card: hsl(0 0% 100%);
   --color-card-foreground: hsl(222.2 84% 4.9%);
-  
+
   /* Custom border radius using calc() */
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -53,25 +53,25 @@
     --color-ring: hsl(217.2 32.6% 17.5%);
     --color-background: hsl(222.2 84% 4.9%);
     --color-foreground: hsl(210 40% 98%);
-    
+
     --color-primary: hsl(210 40% 98%);
     --color-primary-foreground: hsl(222.2 47.4% 11.2%);
-    
+
     --color-secondary: hsl(217.2 32.6% 17.5%);
     --color-secondary-foreground: hsl(210 40% 98%);
-    
+
     --color-destructive: hsl(0 62.8% 30.6%);
     --color-destructive-foreground: hsl(210 40% 98%);
-    
+
     --color-muted: hsl(217.2 32.6% 17.5%);
     --color-muted-foreground: hsl(215 20.2% 65.1%);
-    
+
     --color-accent: hsl(217.2 32.6% 17.5%);
     --color-accent-foreground: hsl(210 40% 98%);
-    
+
     --color-popover: hsl(222.2 84% 4.9%);
     --color-popover-foreground: hsl(210 40% 98%);
-    
+
     --color-card: hsl(222.2 84% 4.9%);
     --color-card-foreground: hsl(210 40% 98%);
   }
@@ -84,25 +84,25 @@
   --color-ring: hsl(217.2 32.6% 17.5%);
   --color-background: hsl(222.2 84% 4.9%);
   --color-foreground: hsl(210 40% 98%);
-  
+
   --color-primary: hsl(210 40% 98%);
   --color-primary-foreground: hsl(222.2 47.4% 11.2%);
-  
+
   --color-secondary: hsl(217.2 32.6% 17.5%);
   --color-secondary-foreground: hsl(210 40% 98%);
-  
+
   --color-destructive: hsl(0 62.8% 30.6%);
   --color-destructive-foreground: hsl(210 40% 98%);
-  
+
   --color-muted: hsl(217.2 32.6% 17.5%);
   --color-muted-foreground: hsl(215 20.2% 65.1%);
-  
+
   --color-accent: hsl(217.2 32.6% 17.5%);
   --color-accent-foreground: hsl(210 40% 98%);
-  
+
   --color-popover: hsl(222.2 84% 4.9%);
   --color-popover-foreground: hsl(210 40% 98%);
-  
+
   --color-card: hsl(222.2 84% 4.9%);
   --color-card-foreground: hsl(210 40% 98%);
 }
@@ -121,7 +121,7 @@
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: var(--color-blue-700);
   }
@@ -134,7 +134,7 @@
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: var(--color-gray-300);
   }
@@ -149,7 +149,7 @@
   border-bottom: 1px solid var(--color-gray-200);
   cursor: pointer;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: var(--color-gray-200);
   }

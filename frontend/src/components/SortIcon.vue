@@ -1,6 +1,6 @@
 <template>
   <svg
-    class="w-4 h-4 text-gray-400"
+    class="h-4 w-4 text-gray-400"
     :class="{ 'text-blue-600': isActive }"
     fill="none"
     stroke="currentColor"
@@ -31,12 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue';
 
 interface Props {
   field: string;
   currentField: string;
-  direction: "asc" | "desc";
+  direction: 'asc' | 'desc';
 }
 
 const props = defineProps<Props>();

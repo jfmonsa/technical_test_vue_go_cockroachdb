@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <HeaderSection />
 
-     <SearchControls
+      <SearchControls
         :searchQuery="searchQuery"
         :loading="loading"
         @update:searchQuery="setSearch"
@@ -21,7 +21,7 @@
 
       <!-- Table -->
       <div
-        class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+        class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
       >
         <StocksTable
           :stocks="sortedStocks"
@@ -44,17 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { useStockStore } from "../stores/stockStore";
-import ErrorAlert from "../components/ErrorAlert.vue";
-import SearchControls from "../components/SearchControls.vue";
-import PaginationControls from "@/components/PaginationControls.vue";
-import HeaderSection from "../components/HeaderSection.vue";
-import StatCardSection from "../components/StatCardSection.vue";
-import StocksTable from "../components/StocksTable.vue";
-import { storeToRefs } from "pinia";
-
-
+import { onMounted } from 'vue';
+import { useStockStore } from '../stores/stockStore';
+import ErrorAlert from '../components/ErrorAlert.vue';
+import SearchControls from '../components/SearchControls.vue';
+import PaginationControls from '@/components/PaginationControls.vue';
+import HeaderSection from '../components/HeaderSection.vue';
+import StatCardSection from '../components/StatCardSection.vue';
+import StocksTable from '../components/StocksTable.vue';
+import { storeToRefs } from 'pinia';
 
 const stockStore = useStockStore();
 
@@ -70,24 +68,16 @@ const {
   sortField,
   sortDirection,
   sortedStocks,
-  
 } = storeToRefs(stockStore);
 
-const {
-  fetchStocks,
-  setPage,
-  setSearch,
-  setSorting,
-} = stockStore;
+const { fetchStocks, setPage, setSearch, setSorting } = stockStore;
 // Methods
 const refreshData = () => {
   fetchStocks(currentPage.value);
 };
 
-
 // Lifecycle
 onMounted(() => {
   fetchStocks();
 });
-
 </script>

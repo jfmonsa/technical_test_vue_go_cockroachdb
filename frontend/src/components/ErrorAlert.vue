@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6"
-  >
+  <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
     <div class="flex">
       <svg
         class="h-5 w-5 text-red-400"
@@ -18,12 +16,12 @@
       </svg>
       <div class="ml-3">
         <h3 class="text-sm font-medium text-red-800">Error</h3>
-        <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+        <p class="mt-1 text-sm text-red-700">{{ error }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ error: string | null}>();
+defineProps<{ error: string | null }>();
 </script>
