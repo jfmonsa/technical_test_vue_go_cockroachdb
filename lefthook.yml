@@ -1,13 +1,40 @@
 pre-commit:
   parallel: true
   commands:
-    lint:
-      glob: "frontend/**/*.{js,ts,vue}"
+    # For frontend files
+    lint_frontend:
+      root: frontend
+      glob: "./**/*.{js,ts,vue}"
       run: pnpm eslint "{staged_files}" --max-warnings 0 --config eslint.config.js --no-warn-ignored
 
-    format:
-      glob: "frontend/**/*.{js,ts,vue,css,scss, json, yaml, yml, md}"
+    format_frontend:
+      root: frontend
+      glob: "./**/*.{js,ts,vue,css,scss, json, yaml, yml, md}"
       run: pnpm prettier --write "{staged_files}"
+      stage_fixed: true
+
+    # For backend files
+    lint_backend:
+      root: backend
+      glob: "./**/*.{go}"
+      run: golangci-lint run "{staged_files}" --config .golangci.yml
+
+    format_backend:
+      root: backend
+      glob: "./**/*.{go}"
+      run: gofmt -w "{staged_files}"
+      stage_fixed: true
+
+    sort_imports_backend:
+      root: backend
+      glob: "./**/*.{go}"
+      run: goimports -w {staged_files}
+      stage_fixed: true
+
+    tidy_deps_backend:
+      root: backend
+      glob: "./**/*.{go}"
+      run: go mod tidy
       stage_fixed: true
 
 post-merge:
@@ -17,7 +44,8 @@ post-merge:
     - rebase
   commands:
     install:
-      glob: "frontend/{pnpm-lock.yaml, package.json}"
+      root: frontend
+      glob: "{pnpm-lock.yaml, package.json}"
       run: pnpm install
 # TODO: set the scripts in Taskfile and use them here, in order to avoid duplication
 # TODO: implement ci pipeline
