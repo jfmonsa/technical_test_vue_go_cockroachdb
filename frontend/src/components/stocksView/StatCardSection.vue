@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import StatCard from '../StatCard.vue';
-import StatsIcon from '../Icons/StatsIcon.vue';
+import StatCard from '../common/StatCard.vue';
+import StatsIcon from '../Icons/ChartBarIcon.vue';
 import SearchGreenIcon from '../Icons/SearchGreenIcon.vue';
 import PageIcon from '../Icons/PageIcon.vue';
 
