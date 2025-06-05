@@ -3,8 +3,8 @@
 Una aplicación simple construida con Go, Vue y CockroachDB que permite obtener, almacenar y visualizar recomendaciones de acciones de bolsa. Implementa un sistema de recomendación basado en reglas para sugerir las mejores acciones en las que invertir hoy.
 
 <div style="display: flex; gap: 16px; flex-wrap: wrap;">
-    <img src="./docs/images/homeView.png" alt="Screenshot of home view" style="max-width: 48%; height: auto; border: 1px solid #ddd; border-radius: 4px;">
     <img src="./docs/images/Recommendations.png" alt="Screenshot of recommendations view" style="max-width: 48%; height: auto; border: 1px solid #ddd; border-radius: 4px;">
+    <img src="./docs/images/homeView.png" alt="Screenshot of home view" style="max-width: 48%; height: auto; border: 1px solid #ddd; border-radius: 4px;">
 </div>
 
 ---
