@@ -36,27 +36,9 @@ Una aplicación simple construida con Go, Vue y CockroachDB que permite obtener,
 
 ---
 
-## 🧱 Estructura del proyecto
-
-```
-.
-├── src/
-│ ├── api/
-│ │ └── stocks/ # Handlers HTTP
-│ ├── internal/
-│ │ └── stocks/ # Lógica de negocio y repositorios
-│ ├── models/ # Modelo Stock
-│ ├── app/ # Configuración de la DB y variables de entorno
-│ └── main.go # Entry point del servidor
-├── etl/
-│ └── fetch.go # Script ETL para cargar datos desde API externa
-├── terraform/ # Infraestructura como código
-└── README.md
-
-
-```
-
 ## Requerimientos: Como fueron resultos y sus retos
+
+---
 
 ### ⚙️ Parte 1: Implementación del Proceso ETL (_Connect to the API and store the data_)
 
@@ -83,6 +65,8 @@ Una vez transformado el dato, se inserta en la tabla stocks. Se utiliza la estra
 #### **_🧾 Registro de errores_**
 
 Para asegurar la trazabilidad, todo el proceso genera logs en archivos con timestamps, ubicados en una carpeta `logs/`. Además, se implementó una tabla en la base de datos para guardar los registros que fallaron en las fases de transformación o carga, con sus respectivos mensajes de error y la fase en la que ocurrió el problema.
+
+---
 
 ### 🛠️ Parte 2.1: API RESTful
 
@@ -187,7 +171,7 @@ response:
 }
 ```
 
-### 🧱 Organización: Handler, Service y Repository
+#### 🧱 Organización: Handler, Service y Repository
 
 Se siguió una arquitectura de 3 capas:
 
@@ -202,7 +186,9 @@ handler.go  ⟶  service.go  ⟶  repository_interface.go  ⟶  repository_cockr
 
 🧩 Ventaja: esta separación facilita testeo, mantenimiento y futura migración de la capa de datos.
 
-### 🛠️ Parte 2.2
+---
+
+### 🛠️ Parte 2.2: Frotend
 
 El frontend fue desarrollado en Vue 3 con TypeScript, siguiendo buenas prácticas como el uso de la API de composición, componentes modulares y separación clara entre vistas, componentes y lógica de estado.
 
@@ -221,9 +207,6 @@ Gracias a Pinia y la reactividad de Vue, el sistema actualiza automáticamente l
 - Integración eficiente con el backend mediante variables de entorno y peticiones dinámicas.
 
 <!--
-- arquitectura backend
-- manejo de estado (caching)
-- manejor de arquitectura front
 - posibles mejoras si la app escala
 TODO: expliación de como funciona el algoritmo y posibles mejores
 - Arquitectura de eventos, como se podría escalar este sistema para trabajar con datos "vivos" cron-jobs, lambdas, microservicios, colas
