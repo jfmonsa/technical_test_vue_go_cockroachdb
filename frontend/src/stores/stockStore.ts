@@ -27,25 +27,6 @@ export const useStockStore = defineStore('stock', () => {
 
   // Getters
   /**
-   * Computed property that filters the list of stocks based on the current search query.
-   *
-   * If the search query is empty, all stocks are returned. Otherwise, it returns only the stocks
-   * whose `ticker`, `company`, `brokerage`, or `action` fields include the search query (case-insensitive).
-   */
-  const filteredStocks = computed(() => {
-    if (!searchQuery.value) return stocks.value;
-
-    const query = searchQuery.value.toLowerCase();
-    return stocks.value.filter(
-      (stock) =>
-        stock.ticker.toLowerCase().includes(query) ||
-        stock.company.toLowerCase().includes(query) ||
-        stock.brokerage.toLowerCase().includes(query) ||
-        stock.action.toLowerCase().includes(query),
-    );
-  });
-
-  /**
    * A computed property that returns a sorted array of stocks based on the selected sort field and direction.
    *
    * - If the sort field is "time", stocks are sorted by their date values in ascending or descending order.
@@ -55,7 +36,7 @@ export const useStockStore = defineStore('stock', () => {
    * The sorting is performed on a shallow copy of the filtered stocks to avoid mutating the original array.
    */
   const sortedStocks = computed(() => {
-    const sorted = [...filteredStocks.value];
+    const sorted = [...stocks.value];
 
     sorted.sort((a, b) => {
       const aValue = a[sortField.value];
@@ -81,14 +62,24 @@ export const useStockStore = defineStore('stock', () => {
     return sorted;
   });
 
+  type FetchStocksParams = {
+    page?: number;
+    limit?: number;
+    search?: string;
+  };
+
   // Actions
-  const fetchStocks = async (page: number = 1) => {
+  const fetchStocks = async ({
+    page = 1,
+    search = '',
+  }: FetchStocksParams = {}) => {
     loading.value = true;
     error.value = null;
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/stocks?page=${page}&limit=${limit.value}`,
+        // &sort=${sortField.value}&direction=${sortDirection.value}
+        `${import.meta.env.VITE_API_BASE_URL}/stocks?page=${page}&limit=${limit.value}&search=${encodeURIComponent(search)}`,
       );
 
       if (!response.ok) {
@@ -112,11 +103,12 @@ export const useStockStore = defineStore('stock', () => {
 
   const setPage = (page: number) => {
     currentPage.value = page;
-    fetchStocks(page);
+    fetchStocks({ page });
   };
 
-  const setSearch = (query: string) => {
+  const handleSearch = (query: string) => {
     searchQuery.value = query;
+    fetchStocks({ page: 1, search: query });
   };
 
   const setSorting = (field: keyof Stock) => {
@@ -142,13 +134,12 @@ export const useStockStore = defineStore('stock', () => {
     sortDirection,
 
     // Getters
-    filteredStocks,
     sortedStocks,
 
     // Actions
     fetchStocks,
     setPage,
-    setSearch,
+    handleSearch,
     setSorting,
   };
 });

@@ -6,7 +6,7 @@
       <SearchControls
         :searchQuery="searchQuery"
         :loading="loading"
-        @update:searchQuery="setSearch"
+        @update:searchQuery="handleSearch"
         @refresh="refreshData"
       />
 
@@ -70,10 +70,10 @@ const {
   sortedStocks,
 } = storeToRefs(stockStore);
 
-const { fetchStocks, setPage, setSearch, setSorting } = stockStore;
+const { fetchStocks, setPage, handleSearch, setSorting } = stockStore;
 // Methods
 const refreshData = () => {
-  fetchStocks(currentPage.value);
+  fetchStocks({ page: currentPage.value });
 };
 
 // Lifecycle

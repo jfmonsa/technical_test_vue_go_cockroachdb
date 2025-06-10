@@ -46,7 +46,7 @@ export const useRecommendationStore = defineStore('recommendation', () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/recommendations?limit=${limit.value}&minimun_score=${minimumScore.value}`,
+        `${import.meta.env.VITE_API_BASE_URL}/recommendations?limit=${limit.value}&minimum_score=${minimumScore.value}`,
       );
 
       if (!response.ok) {
