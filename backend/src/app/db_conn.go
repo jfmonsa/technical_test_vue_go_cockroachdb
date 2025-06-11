@@ -15,7 +15,7 @@ import (
 // Parameters:
 //   - ctx: context.Context for managing request-scoped values, cancellation, and timeouts.
 func GetDBConnection(ctx context.Context) *sql.DB {
-	conn, err := sql.Open("postgres", EnvVarsValues.DBURL)
+	conn, err := sql.Open("postgres", EnvVarsValues.DB_URL)
 	if err != nil {
 		log.Fatal("DB Connection Error:", err)
 	}

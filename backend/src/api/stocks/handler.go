@@ -84,7 +84,14 @@ func (h *Handler) GetRecommendations(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	stocks, err := h.Repo.GetTopRecommendedStocks(ctx, limit, minimumScore)
+	page := 1
+	if p := r.URL.Query().Get("page"); p != "" {
+		if parsed, err := strconv.Atoi(p); err == nil && parsed > 0 {
+			page = parsed
+		}
+	}
+
+	stocks, err := h.Repo.GetTopRecommendedStocks(ctx, page, limit, minimumScore)
 	if err != nil {
 		http.Error(w, "Failed to get recommendations", http.StatusInternalServerError)
 		return

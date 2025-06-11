@@ -5,7 +5,7 @@ import "os"
 type EnvVars struct {
 	ApiURL    string
 	AuthToken string
-	DBURL     string
+	DB_URL    string
 	Port      string
 }
 
@@ -44,7 +44,7 @@ func initEnvVars() EnvVars {
 	return EnvVars{
 		ApiURL:    envVars[envVarKeys.externalApiUrl],
 		AuthToken: envVars[envVarKeys.externalApiAuthToken],
-		DBURL:     envVars[envVarKeys.dbUrl],
+		DB_URL:    envVars[envVarKeys.dbUrl],
 		Port:      envVars[envVarKeys.port],
 	}
 }

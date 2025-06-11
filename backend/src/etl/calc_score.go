@@ -1,10 +1,58 @@
-package stocks
+package main
 
 import (
 	"strings"
 	"time"
 	"vue_go_cockroachdb/src/models"
 )
+
+func CalculateStockScore(s models.Stock) float64 {
+	score := 0.0
+
+	// 1. Profit potential
+	if s.TargetFrom > 0 {
+		potential := ((s.TargetTo - s.TargetFrom) / s.TargetFrom) * 100
+		if potential > 0 {
+			score += potential / 4 // More weight to upside
+		} else {
+			score += potential / 10 // Penalize downside, but less
+		}
+	}
+
+	// 2. Recommended action
+	action := strings.ToLower(s.Action)
+	for _, a := range actionScore {
+		if strings.Contains(action, a.Keyword) {
+			score += a.Score
+			break // only applies the first match
+		}
+	}
+
+	// 3. Rating change
+	from := normalizeRating(s.RatingFrom)
+	to := normalizeRating(s.RatingTo)
+	if from > 0 && to > 0 {
+		diff := to - from
+		score += diff * 2 // Weighs the rating change
+	}
+
+	// 4. Recent (more weight if it is from the last 3 days)
+	var daysAgo float64
+	if t, err := time.Parse(time.RFC3339, s.Time); err == nil {
+		daysAgo = time.Since(t).Hours() / 24
+	} else {
+		daysAgo = 999 // If it cannot be parsed, it is assumed to be very old
+	}
+	if daysAgo < 1 {
+		score += 1.5
+	} else if daysAgo < 3 {
+		score += 1
+	} else if daysAgo < 7 {
+		score += 0.5
+	}
+
+	return score
+}
 
 var ratingScore = []struct {
 	Rating string
@@ -59,52 +107,4 @@ func normalizeRating(rating string) float64 {
 		}
 	}
 	return 0
-}
-
-func CalculateStockScore(s models.Stock) float64 {
-	score := 0.0
-
-	// 1. Profit potential
-	if s.TargetFrom > 0 {
-		potential := ((s.TargetTo - s.TargetFrom) / s.TargetFrom) * 100
-		if potential > 0 {
-			score += potential / 4 // More weight to upside
-		} else {
-			score += potential / 10 // Penalize downside, but less
-		}
-	}
-
-	// 2. Recommended action
-	action := strings.ToLower(s.Action)
-	for _, a := range actionScore {
-		if strings.Contains(action, a.Keyword) {
-			score += a.Score
-			break // only applies the first match
-		}
-	}
-
-	// 3. Rating change
-	from := normalizeRating(s.RatingFrom)
-	to := normalizeRating(s.RatingTo)
-	if from > 0 && to > 0 {
-		diff := to - from
-		score += diff * 2 // Weighs the rating change
-	}
-
-	// 4. Recent (more weight if it is from the last 3 days)
-	var daysAgo float64
-	if t, err := time.Parse(time.RFC3339, s.Time); err == nil {
-		daysAgo = time.Since(t).Hours() / 24
-	} else {
-		daysAgo = 999 // If it cannot be parsed, it is assumed to be very old
-	}
-	if daysAgo < 1 {
-		score += 1.5
-	} else if daysAgo < 3 {
-		score += 1
-	} else if daysAgo < 7 {
-		score += 0.5
-	}
-
-	return score
 }

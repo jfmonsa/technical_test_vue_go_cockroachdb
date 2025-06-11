@@ -103,49 +103,40 @@ func (r *CockroachDBStockRepository) GetStockByTicker(ctx context.Context, ticke
 	return &s, nil
 }
 
-type StockWithScore struct {
-	models.Stock
-	Score float64
-}
+func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context, page, limit int, minimumScore float64) ([]models.StockWithScore, error) {
+	offset := (page - 1) * limit
 
-func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context, limit int, minimunScore float64) ([]StockWithScore, error) {
+	// esto porque ya todo esta calculado en la bd por tanto no hace falta calcularlo de nuevo
 	query := `
-        SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time
+        SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time, recommendation_score
         FROM stocks
-        ORDER BY time DESC
+		WHERE recommendation_score >= $1
+        ORDER BY  recommendation_score time DESC
+		LIMIT $2 OFFSET $3
         `
 
-	rows, err := r.DB.QueryContext(ctx, query)
+	rows, err := r.DB.QueryContext(ctx, query, minimumScore, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var recommendations []StockWithScore
+	var recommendations []models.StockWithScore
 
 	for rows.Next() {
-		var s models.Stock
+		var s models.StockWithScore
 		if err := rows.Scan(&s.Ticker, &s.Company, &s.Brokerage, &s.Action, &s.RatingFrom, &s.RatingTo, &s.TargetFrom, &s.TargetTo, &s.Time); err != nil {
 			continue
 		}
 
-		score := CalculateStockScore(s)
-
 		// Format score for display in the company name
-		// s.Company = fmt.Sprintf("%s (score: %.2f)", s.Company, score)
+		s.Company = fmt.Sprintf("%s (score: %.2f)", s.Company, s.RecommendationScore)
 
-		// Umbral mínimo (opcional)
-		if score >= minimunScore {
-			recommendations = append(recommendations, StockWithScore{
-				Stock: s,
-				Score: score,
-			})
-		}
-	}
+		recommendations = append(recommendations, models.StockWithScore{
+			Stock:               s.Stock,
+			RecommendationScore: s.RecommendationScore,
+		})
 
-	// Limitar resultados
-	if len(recommendations) > limit {
-		recommendations = recommendations[:limit]
 	}
 
 	return recommendations, nil

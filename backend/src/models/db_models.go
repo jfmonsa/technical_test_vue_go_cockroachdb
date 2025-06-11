@@ -1,6 +1,7 @@
 package models
 
-// Represents a stock recommendation with its details in the database (stocks table).
+// not stored in the database, but used to represent a stock recommendation
+// for internal processing and transformation.
 type Stock struct {
 	Ticker     string  `json:"ticker"`
 	Company    string  `json:"company"`
@@ -11,6 +12,12 @@ type Stock struct {
 	TargetFrom float64 `json:"target_from"`
 	TargetTo   float64 `json:"target_to"`
 	Time       string  `json:"time"`
+}
+
+// Represents a stock recommendation with its details in the database (stocks table).
+type StockWithScore struct {
+	Stock
+	RecommendationScore float64 `json:"recommendation_score,omitempty"`
 }
 
 // Constants for stock ratings to avoid magic strings in the code.
