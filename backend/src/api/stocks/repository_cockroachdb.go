@@ -111,7 +111,7 @@ func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context
         SELECT ticker, company, brokerage, action, rating_from, rating_to, target_from, target_to, time, recommendation_score
         FROM stocks
 		WHERE recommendation_score >= $1
-        ORDER BY  recommendation_score time DESC
+        ORDER BY recommendation_score DESC, time DESC
 		LIMIT $2 OFFSET $3
         `
 
@@ -122,21 +122,26 @@ func (r *CockroachDBStockRepository) GetTopRecommendedStocks(ctx context.Context
 	defer rows.Close()
 
 	var recommendations []models.StockWithScore
-
 	for rows.Next() {
 		var s models.StockWithScore
-		if err := rows.Scan(&s.Ticker, &s.Company, &s.Brokerage, &s.Action, &s.RatingFrom, &s.RatingTo, &s.TargetFrom, &s.TargetTo, &s.Time); err != nil {
+		err := rows.Scan(
+			&s.Ticker,
+			&s.Company,
+			&s.Brokerage,
+			&s.Action,
+			&s.RatingFrom,
+			&s.RatingTo,
+			&s.TargetFrom,
+			&s.TargetTo,
+			&s.Time,
+			&s.RecommendationScore,
+		)
+
+		if err != nil {
 			continue
 		}
-
-		// Format score for display in the company name
 		s.Company = fmt.Sprintf("%s (score: %.2f)", s.Company, s.RecommendationScore)
-
-		recommendations = append(recommendations, models.StockWithScore{
-			Stock:               s.Stock,
-			RecommendationScore: s.RecommendationScore,
-		})
-
+		recommendations = append(recommendations, s)
 	}
 
 	return recommendations, nil

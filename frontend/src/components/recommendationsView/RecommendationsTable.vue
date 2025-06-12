@@ -77,7 +77,7 @@
               <div class="font-medium text-gray-900">{{ rec.company }}</div>
             </td>
             <td class="table-cell">
-              <ScoreBadge :score="rec.Score" />
+              <ScoreBadge :score="rec.recommendation_score" />
             </td>
             <td class="table-cell">
               <span class="text-gray-700">{{ rec.brokerage }}</span>

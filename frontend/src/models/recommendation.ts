@@ -8,5 +8,5 @@ export interface Recommendation {
   target_from: number;
   target_to: number;
   time: string;
-  Score: number;
+  recommendation_score: number;
 }

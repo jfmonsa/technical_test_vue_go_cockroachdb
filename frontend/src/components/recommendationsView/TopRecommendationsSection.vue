@@ -30,7 +30,7 @@
               <p class="text-sm text-gray-600">{{ rec.company }}</p>
             </div>
           </div>
-          <ScoreBadge :score="rec.Score" size="large" />
+          <ScoreBadge :score="rec.recommendation_score" size="large" />
         </div>
 
         <div class="space-y-2 text-sm">
