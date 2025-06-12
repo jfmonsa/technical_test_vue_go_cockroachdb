@@ -90,7 +90,7 @@ func main() {
 			if err != nil {
 				log.Println("Insert error:", err)
 				if err := insertFailedItem(ctx, conn, raw, err, failedPhaseLoad); err != nil {
-					log.Println("Failed to insert failed item:", err)
+					log.Println("Failed to insert good item:", err)
 				}
 			}
 		}

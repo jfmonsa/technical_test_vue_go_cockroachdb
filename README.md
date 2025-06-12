@@ -36,9 +36,7 @@ Una aplicación simple construida con Go, Vue y CockroachDB que permite obtener,
 
 ---
 
-## Requerimientos: Como fueron resultos y sus retos
-
----
+## Requerimientos: Como fueron resueltos y sus retos
 
 ### ⚙️ Parte 1: Implementación del Proceso ETL (_Connect to the API and store the data_)
 
@@ -109,7 +107,7 @@ response:
 
 ##### ⭐ `GET /stocks/recommendations`
 
-Devuelve las mejores acciónes para invertir hoy según el algoritmo.
+Devuelve las mejores acciones para invertir hoy según el algoritmo.
 
 ```shell
 curl http://localhost:8080/stocks/recommendations
@@ -188,7 +186,7 @@ handler.go  ⟶  service.go  ⟶  repository_interface.go  ⟶  repository_cockr
 
 ---
 
-### 🛠️ Parte 2.2: Frotend
+### 🛠️ Parte 2.2: Frontend
 
 El frontend fue desarrollado en Vue 3 con TypeScript, siguiendo buenas prácticas como el uso de la API de composición, componentes modulares y separación clara entre vistas, componentes y lógica de estado.
 
@@ -223,7 +221,75 @@ TODO: Get started variable de entorno etc.
  -->
 
 <!--
-TODO: incluir imagenes de la app funcionando
+TODO: incluir imágenes de la app funcionando
 TODO: script o docker-compose para levantar toda el app por primera vez
 
 -->
+
+---
+
+### 🧠 Parte 3: Algoritmo de recomendación (Cálculo del Score)
+
+Se implementó un **algoritmo de scoring** que evalúa cada registro de la base de datos y le asigna un puntaje numérico basado en múltiples factores relevantes para la toma de decisiones de inversión. Este es pre-procesado en la bd para que cuando el usuario haga la consulta no se tenga que recalcular
+
+El objetivo es priorizar aquellas acciones con mayor potencial y menor riesgo, según la información disponible.
+
+#### **¿Cómo funciona el algoritmo de score?**
+
+El algoritmo toma en cuenta los siguientes aspectos para cada acción:
+
+1. **Potencial de ganancia (`target_from` vs `target_to`):**
+
+   - Calcula el porcentaje de ganancia potencial entre el precio objetivo anterior y el nuevo.
+   - Si el potencial es positivo, suma más puntos (más peso si la subida es grande).
+   - Si es negativo, penaliza el score (pero con menor peso).
+
+2. **Acción recomendada por el bróker (`action`):**
+
+   - Acciones como "upgraded", "initiated", "target raised" suman puntos.
+   - Acciones como "downgraded" o "target lowered" restan puntos.
+   - Se utiliza una tabla de palabras clave y su peso relativo.
+
+3. **Cambio de rating (`rating_from` y `rating_to`):**
+
+   - Se asigna un valor numérico a cada rating (por ejemplo, "Strong Buy" = 10, "Sell" = 1).
+   - Si el rating mejora, se suman puntos proporcionales al cambio.
+   - Si el rating empeora, se penaliza el score.
+
+4. **Actualidad de la recomendación (`time`):**
+   - Las recomendaciones más recientes reciben un bono extra.
+   - Si la recomendación es del mismo día, suma más puntos; si es de la última semana, suma menos.
+
+#### **Ejemplo de fórmula simplificada:**
+
+```go
+score := 0.0
+// 1. Potencial de ganancia
+if s.TargetFrom > 0 {
+    potential := ((s.TargetTo - s.TargetFrom) / s.TargetFrom) * 100
+    if potential > 0 {
+        score += potential / 4
+    } else {
+        score += potential / 10
+    }
+}
+// 2. Acción recomendada
+// ... (ver tabla de acciones y pesos)
+// 3. Cambio de rating
+// ... (ver tabla de ratings y pesos)
+// 4. Actualidad
+// ... (bono por fecha reciente)
+```
+
+#### **Ventajas del enfoque:**
+
+- Permite comparar acciones de diferentes sectores y precios en una misma escala.
+- Es flexible: se pueden ajustar los pesos según la experiencia o feedback de usuarios.
+- Facilita la visualización y el ranking de las mejores oportunidades de inversión.
+
+#### **Notas adicionales:**
+
+- El score se calcula automáticamente durante el proceso ETL y se almacena en la base de datos para eficiencia.
+- El endpoint `/stocks/recommendations` filtra por un score mínimo y ordena por el score más alto, devolviendo las mejores opciones para invertir hoy.
+
+---
