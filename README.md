@@ -230,7 +230,7 @@ TODO: script o docker-compose para levantar toda el app por primera vez
 
 ### 🧠 Parte 3: Algoritmo de recomendación (Cálculo del Score)
 
-Se implementó un **algoritmo de scoring** que evalúa cada registro de la base de datos y le asigna un puntaje numérico basado en múltiples factores relevantes para la toma de decisiones de inversión. Este es pre-procesado en la bd para que cuando el usuario haga la consulta no se tenga que recalcular
+Se implementó un **algoritmo de scoring** que evalúa cada registro de la base de datos y le asigna un puntaje numérico basado en múltiples factores relevantes para la toma de decisiones de inversión.
 
 El objetivo es priorizar aquellas acciones con mayor potencial y menor riesgo, según la información disponible.
 
