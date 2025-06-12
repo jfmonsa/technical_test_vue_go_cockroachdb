@@ -12,12 +12,12 @@ export const useRecommendationStore = defineStore('recommendation', () => {
 
   // Getters
   const topRecommendations = computed(() => {
-    return recommendations.value.sort((a, b) => b.Score - a.Score).slice(0, 5);
+    return recommendations.value.sort((a, b) => b.recommendation_score - a.recommendation_score).slice(0, 5);
   });
 
   const averageScore = computed(() => {
     if (recommendations.value.length === 0) return 0;
-    const sum = recommendations.value.reduce((acc, rec) => acc + rec.Score, 0);
+    const sum = recommendations.value.reduce((acc, rec) => acc + rec.recommendation_score, 0);
     return sum / recommendations.value.length;
   });
 
@@ -30,9 +30,9 @@ export const useRecommendationStore = defineStore('recommendation', () => {
     };
 
     recommendations.value.forEach((rec) => {
-      if (rec.Score >= 12) distribution.excellent++;
-      else if (rec.Score >= 9) distribution.good++;
-      else if (rec.Score >= 7) distribution.fair++;
+      if (rec.recommendation_score >= 12) distribution.excellent++;
+      else if (rec.recommendation_score >= 9) distribution.good++;
+      else if (rec.recommendation_score >= 7) distribution.fair++;
       else distribution.poor++;
     });
 
